@@ -1,0 +1,16 @@
+{
+  "output": "./dist",
+  "clean": true,
+  "include": [
+    "./src/index.html",
+    "./src/js",
+    "./src/images"
+  ],
+  "generate": [
+    {
+      "name": "Compile SASS",
+      "build": ["sass", "--no-source-map", "./src/scss/:./dist/css"],
+      "watch": ["sass", "-c", "--watch", "./src/scss/:./dist/css"]
+    }
+  ]
+}
