@@ -6,7 +6,7 @@
     "./src/js",
     "./src/images"
   ],
-  "generate": [
+  "scripts": [
     {
       "name": "Compile SASS",
       "build": ["sass", "--no-source-map", "./src/scss/:./dist/css"],

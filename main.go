@@ -16,10 +16,10 @@ const (
 )
 
 type Configuration struct {
-	Clean    bool               `json:"clean"`
-	Include  []string           `json:"include"`
-	Output   string             `json:"output"`
-	Generate []GenerationScript `json:"generate"`
+	Clean   bool               `json:"clean"`
+	Include []string           `json:"include"`
+	Output  string             `json:"output"`
+	Scripts []GenerationScript `json:"scripts"`
 }
 
 var (
@@ -105,8 +105,8 @@ func main() {
 	}
 
 	if *watchFlag {
-		runWatch(ctx, pwd, includeSpecs, config.Generate)
+		runWatch(ctx, pwd, includeSpecs, config.Scripts)
 	} else {
-		runGenerationScripts(pwd, config.Generate)
+		runGenerationScripts(pwd, config.Scripts)
 	}
 }
