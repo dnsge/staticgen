@@ -107,6 +107,6 @@ func main() {
 	if *watchFlag {
 		runWatch(ctx, pwd, includeSpecs, config.Scripts)
 	} else {
-		runGenerationScripts(pwd, config.Scripts)
+		runGenerationScripts(ctx, pwd, config.Scripts)
 	}
 }

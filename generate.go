@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"github.com/fatih/color"
 	"os"
 	"os/exec"
@@ -15,7 +16,7 @@ type GenerationScript struct {
 	Build []string `json:"build"`
 }
 
-func runGenerationScripts(pwd string, scripts []GenerationScript) {
+func runGenerationScripts(ctx context.Context, pwd string, scripts []GenerationScript) {
 	for _, script := range scripts {
 		if len(script.Build) == 0 {
 			continue
@@ -25,15 +26,19 @@ func runGenerationScripts(pwd string, scripts []GenerationScript) {
 		printFunc := baseColor.PrintfFunc()
 
 		// Create os command
-		cmd := makeCommand(script.Build)
+		cmd := makeCommandContext(ctx, script.Build)
 		cmd.Dir = pwd
 		cmd.Stdout = NewPrefixWriter(script, os.Stdout, baseColor)
 		cmd.Stderr = NewPrefixWriter(script, os.Stdout, color.New(color.FgHiWhite).Add(color.BgRed))
 
-		printFunc("[%s] Generating ... ", script.Name)
+		printFunc("[%s] Running build ... ", script.Name)
 		start := time.Now()
 		if err := cmd.Run(); err != nil {
-			printFunc("error executing %q: %v\n", strings.Join(script.Build, " "), err)
+			if errors.Is(ctx.Err(), context.Canceled) || errors.Is(ctx.Err(), context.DeadlineExceeded) {
+				color.HiRed("canceled\n")
+			} else {
+				color.HiRed("error executing %q: %v\n", strings.Join(script.Build, " "), err)
+			}
 			os.Exit(1)
 		} else {
 			end := time.Now()
